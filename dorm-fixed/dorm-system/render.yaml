@@ -1,0 +1,29 @@
+# render.yaml
+# 放在项目根目录，Render 会自动读取
+
+services:
+  # 后端 Spring Boot
+  - type: web
+    name: dorm-backend
+    runtime: java
+    rootDir: backend
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -Xms128m -Xmx400m -jar target/dorm-system-1.0.0.jar
+    envVars:
+      - key: MYSQL_URL
+        fromDatabase:
+          name: dorm-db
+          property: connectionString
+      - key: MYSQL_USER
+        fromDatabase:
+          name: dorm-db
+          property: user
+      - key: MYSQL_PASSWORD
+        fromDatabase:
+          name: dorm-db
+          property: password
+    plan: free
+
+databases:
+  - name: dorm-db
+    plan: free        # 免费 PostgreSQL（注意：需改代码支持 PG）

@@ -1,0 +1,8 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "java -jar target/dorm-system-1.0.0.jar"
+healthcheckPath = "/api/notices"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"

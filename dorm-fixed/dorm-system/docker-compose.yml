@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: dorm-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: dorm123456
+      MYSQL_DATABASE: dorm_system
+      MYSQL_CHARSET: utf8mb4
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pdorm123456"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Spring Boot 后端
+  backend:
+    build: ./backend
+    container_name: dorm-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dorm_system?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: dorm123456
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: on-failure
+
+  # Vue 前端（Nginx）
+  frontend:
+    build: ./frontend
+    container_name: dorm-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: on-failure
+
+volumes:
+  mysql_data:
