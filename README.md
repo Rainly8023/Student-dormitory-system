@@ -178,7 +178,4 @@ Authorization: Bearer <token>
 - 前端 Axios 请求拦截器自动注入 Token，响应拦截器统一处理 401/403
 - Vue Router 守卫实现前端路由鉴权
 - Pinia 管理全局登录状态
-
----
-
-*学生宿舍管理系统 · 毕业设计 2024*
+就这样吧累了
